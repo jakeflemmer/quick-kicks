@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="300" height="1000"
+	creationComplete="startScript(event);" 
+	backgroundColor="#09FD94"	
+	>
+	<mx:states>
+		<mx:State name="settings">
+			<mx:RemoveChild target="{button2}"/>
+			<mx:RemoveChild target="{playBtn}"/>
+			<mx:RemoveChild target="{button3}"/>
+			<mx:RemoveChild target="{button4}"/>
+			<mx:RemoveChild target="{button5}"/>
+			<mx:RemoveChild target="{slowerBtn}"/>
+			<mx:AddChild relativeTo="{hbox1}" position="lastChild">
+				<mx:VBox width="100%" backgroundColor="#042802" height="50%" borderStyle="solid" borderColor="#0C5B09" cornerRadius="20">
+					<mx:Spacer width="100%" height="50"/>
+					<mx:HRule width="100%" strokeColor="#0D0D57" height="5"/>
+					<mx:Label text="Max Speed" width="100%" textAlign="center"/>
+					<mx:HSlider id="redMaxSpeed" 
+						change="GameSettingsData.getInstance().redTeamMaxSpeed = redMaxSpeed.value;" 
+						creationComplete="redMaxSpeed.value = GameSettingsData.getInstance().redTeamMaxSpeed;"
+						minimum="5" maximum="20" width="100%" 
+						snapInterval="1" enabled="true" 
+						tickColor="#ffffff" fillAlphas="[1.0, 1.0]" fillColors="[#8B1616, #8B1616]" tickInterval="3"/>
+					<mx:Label text="Acceleration" textAlign="center" width="100%"/>
+					<mx:HSlider id="redAcceleration" 
+						change="GameSettingsData.getInstance().redTeamAcceleration = redAcceleration.value;" 
+						creationComplete="redAcceleration.value = GameSettingsData.getInstance().redTeamAcceleration;"
+						width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#8B1616, #FF0000]" minimum="0" maximum="5" tickColor="#ffffff" tickInterval=".8"/>
+					<mx:Label text="Kick Power" width="100%" textAlign="center"/>
+					<mx:HSlider id="redKickPower"
+						change="GameSettingsData.getInstance().redTeamKickPower = redKickPower.value;"
+						creationComplete="redKickPower.value = GameSettingsData.getInstance().redTeamKickPower;"
+						width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#8B1616, #FF0000]" minimum="10" maximum="60" tickInterval="10" tickColor="#ffffff"/>
+					<mx:Spacer width="100%" height="50"/>
+					<mx:HRule width="100%" height="11" strokeWidth="2" strokeColor="#FFFFFF"/>
+					<mx:Label text="Max Speed" width="100%" textAlign="center"/>
+					<mx:HSlider id="blueMaxSpeed"
+						change="GameSettingsData.getInstance().blueTeamMaxSpeed = blueMaxSpeed.value;" 
+						creationComplete="blueMaxSpeed.value = GameSettingsData.getInstance().blueTeamMaxSpeed;"
+						width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#0E1496, #0E1496]" minimum="5" maximum="20" tickInterval="3" tickColor="#ffffff"/>
+					<mx:Label text="Acceleration" width="100%" textAlign="center"/>
+					<mx:HSlider id="blueAcceleration" 
+						change="GameSettingsData.getInstance().blueTeamAcceleration = blueAcceleration.value;"
+						creationComplete="blueAcceleration.value = GameSettingsData.getInstance().blueTeamAcceleration;"		
+						width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#0E1496, #0E1496]" tickInterval=".8" tickColor="#ffffff" minimum="0" maximum="5"/>
+					<mx:Label text="Kick Power" width="100%" textAlign="center"/>
+					<mx:HSlider id="blueKickPower" 
+						change="GameSettingsData.getInstance().blueTeamKickPower = blueKickPower.value;"
+						creationComplete="blueKickPower.value = GameSettingsData.getInstance().blueTeamKickPower;"
+						width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#0E1496, #0E1496]" tickColor="#ffffff" tickInterval="10" minimum="10" maximum="60"/>
+				</mx:VBox>
+			</mx:AddChild>
+			<mx:RemoveChild target="{fasterBtn}"/>
+			<mx:RemoveChild target="{levelBtn}"/>
+			<mx:RemoveChild target="{easierBtn}"/>
+			<mx:AddChild relativeTo="{hbox2}" position="lastChild">
+				<mx:Button label="MAIN MENU" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" width="100%" height="100" click="currentState=''"/>
+			</mx:AddChild>
+			<mx:RemoveChild target="{harderBtn}"/>
+			<mx:SetProperty target="{hbox2}" name="height"/>
+			<mx:RemoveChild target="{speedBtn}"/>
+		</mx:State>
+		<mx:State name="controls">
+			<mx:RemoveChild target="{button2}"/>
+			<mx:RemoveChild target="{playBtn}"/>
+			<mx:RemoveChild target="{button3}"/>
+			<mx:RemoveChild target="{button4}"/>
+			<mx:RemoveChild target="{button5}"/>
+			<mx:RemoveChild target="{hbox1}"/>
+			<mx:RemoveChild target="{speedBtn}"/>
+			<mx:RemoveChild target="{fasterBtn}"/>
+			<mx:RemoveChild target="{slowerBtn}"/>
+			<mx:RemoveChild target="{levelBtn}"/>
+			<mx:RemoveChild target="{easierBtn}"/>
+			<mx:RemoveChild target="{harderBtn}"/>
+			<mx:RemoveChild target="{speedHBox}"/>
+			<mx:RemoveChild target="{hbox2}"/>
+			<mx:AddChild relativeTo="{vbox1}" position="lastChild">
+				<mx:Canvas width="100%" height="463">
+					<mx:Label y="30" text="CONTROLS" horizontalCenter="0" width="100%" textAlign="center"/>
+					<mx:Label x="10" y="88" text="Arrow keys to move :"/>
+					<mx:Image x="92" y="137" source="pics/arrows.jpg"/>
+					<mx:Label x="10" y="295" text="Z to pass / shoot" width="100%" textAlign="center"/>
+					<mx:Button y="353" label="MAIN MENU" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" height="100" width="200" horizontalCenter="0" click="currentState = ''"/>
+				</mx:Canvas>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+<mx:Script>
+	<![CDATA[
+		import classes.events.GameEvents;
+		import classes.controllers.FieldController;
+		import classes.data.SpeedSettingsData;
+		import classes.data.LevelSettingsData;
+		
+		import classes.data.GameSettingsData;
+		import flash.events.TimerEvent;
+		import flash.utils.Timer;
+		
+		private var _data:GameSettingsData;
+		private var _gameTimer:Timer;
+		[Bindable]
+		private var _timeSeconds:uint=00;
+		[Bindable]
+		private var _timeMinutes:uint = 0;
+		[Bindable]
+		private var timerBtnLbl:String = "";
+		
+		private var _level:uint = GameSettingsData.getInstance().level;
+		private var _speed:uint = GameSettingsData.getInstance().speed;
+		
+		
+		private function startScript(e:Event):void
+		{
+			_gameTimer = new Timer(1000,180);
+			_gameTimer.start();
+			_gameTimer.addEventListener(TimerEvent.TIMER,onGameTimer);
+		}
+		private function onGameTimer(e:TimerEvent):void
+		{
+			_timeSeconds ++;
+			if ( _timeSeconds == 60 ) {
+				_timeSeconds = 0;
+				_timeMinutes ++;
+				
+			}
+			if ( _timeSeconds < 10 ) 
+			{
+				timerBtnLbl = _timeMinutes.toString() + ":0" + _timeSeconds.toString();
+			} else {
+				timerBtnLbl = _timeMinutes.toString() + ":" + _timeSeconds.toString();
+			}
+		}
+		
+		private function levelUp(e:MouseEvent):void
+		{
+			_level ++;
+			
+			easierBtn.enabled = true;
+			switch (_level){
+				case 1:
+					LevelSettingsData.level1();
+					levelBtn.label = "EASY";
+					break;
+				case 2:
+					LevelSettingsData.level2();
+					levelBtn.label = "MEDIUM";
+					break;
+				case 3:
+					LevelSettingsData.level3();
+					levelBtn.label = "HARD";
+					break;
+				case 4:
+					harderBtn.enabled = false;
+					LevelSettingsData.level4();
+					levelBtn.label = "SUPER";					
+					break;
+			}
+			
+			
+		}
+		private function levelDown(e:MouseEvent):void
+		{
+			_level --;
+			
+			harderBtn.enabled = true;
+			switch (_level){
+				case 1:
+					easierBtn.enabled = false;
+					levelBtn.label = "EASY";
+					LevelSettingsData.level1();
+					break;
+				case 2:
+					LevelSettingsData.level2();
+					levelBtn.label = "MEDIUM";
+					break;
+				case 3:
+					LevelSettingsData.level3();
+					levelBtn.label = "HARD";
+					break;
+				case 4:
+					LevelSettingsData.level4();
+					levelBtn.label = "SUPER";
+					break;	
+			}
+		}
+		private function faster(e:MouseEvent):void
+		{
+			if ( _speed == 10 ) 
+			{
+				fasterBtn.enabled = false;
+				return;				
+			}
+			slowerBtn.enabled = true;			
+			_speed ++;						
+			SpeedSettingsData.faster();
+			speedBtn.label = _speed.toString();
+		}
+		private function slower(e:MouseEvent):void
+		{
+			if ( _speed == 1 ) 
+			{
+				slowerBtn.enabled = false;
+				return;				
+			}	
+			fasterBtn.enabled = true;			
+			_speed --;						
+			SpeedSettingsData.slower();
+			speedBtn.label = _speed.toString();
+		}
+		private function onPlayClick(e:MouseEvent):void
+		{
+			if ( GameSettingsData.getInstance().gameState == "demo" )
+			{
+				GameSettingsData.getInstance().demoMode=false;
+				GameSettingsData.getInstance().gameState = "playing";
+				playBtn.label = "NEW GAME";				
+			}
+			// always make a new game
+			newGame();
+		}
+		private function newGame():void
+		{
+			GameSettingsData.getInstance().blueScore = 0;
+			GameSettingsData.getInstance().redScore = 0;
+			GameSettingsData.getInstance().newGame();
+			
+		}
+		
+		
+		
+	]]>
+</mx:Script>
+
+
+
+<mx:VBox id="mainVBox"
+	click="GameSettingsData.getInstance().paused = true;"
+	height="100%" width="95%" 
+	backgroundColor="#0C5B09" color="#FFFFFF" fontSize="14" fontFamily="Verdana" verticalGap="0">
+	<mx:HBox width="100%" horizontalGap="0">
+		<mx:Button id="blueScoreBtn"
+			label="{GameSettingsData.getInstance().blueScore}" 
+			width="150" height="200" fillAlphas="[1.0, 1.0]" fillColors="[#3131E4, #28108E]" fontSize="32" borderColor="#28108E" cornerRadius="0"/>
+		<mx:Button id="redScoreBtn"
+			label="{GameSettingsData.getInstance().redScore}"
+			fontSize="32"
+			width="150" height="200" fillAlphas="[1.0, 1.0]" fillColors="[#A40A0A, #630909]" borderColor="#630909" cornerRadius="0"/>
+	</mx:HBox>
+	<mx:Canvas width="100%" height="780" id="canvas1">
+		<mx:VBox y="0" width="100%" horizontalCenter="0" id="vbox1" verticalGap="0" height="100%" color="#FFFFFF" borderColor="#0C5B09" borderStyle="solid" borderThickness="0" cornerRadius="0" fontSize="18" backgroundColor="#0C5B09">
+			<mx:Button label="DEMO" 
+				click="LevelSettingsData.demo();"
+				fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" width="100%" height="14.25%" borderColor="#0C5B09" id="button2" color="#FFFFFF"/>
+			<mx:Button id="playBtn"
+				click="onPlayClick(event);" 
+				label="PLAY" width="100%" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" height="14.25%" borderColor="#0C5B09"/>
+			<mx:Button label="SETTINGS" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" width="100%" height="14.25%" click="currentState = 'settings'" borderColor="#0C5B09" id="button3"/>
+			<mx:Button label="CONTROLS" width="100%" height="14.25%" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09" id="button4" click="currentState = 'controls'"/>
+			<mx:Button label="RULES" width="100%" height="14.25%" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09" id="button5"/>
+			<mx:Button label="\/             SPEED             \/" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" width="100%" height="14.25%" id="hbox1"/>
+			
+			<mx:HBox width="100%" height="14.25%" horizontalGap="0" id="speedHBox" label="SPEED">
+				<mx:Button id="slowerBtn" 
+					label="&lt;&lt;" 
+					click="slower(event);"
+					fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09" height="100%" width="33%"/>
+				<mx:Button id="speedBtn" 
+					label=" {_speed.toString()}" width="33%" height="100%" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09"/>
+				<mx:Button id="fasterBtn" 
+					label="&gt;&gt;" 
+					click="faster(event);"
+					fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09" height="100%" width="33%"/>
+			</mx:HBox>
+			
+			<mx:HBox width="100%" height="14.25%" horizontalGap="0" id="hbox2">
+				<mx:Button id="easierBtn" 
+					label="&lt;&lt;" 
+					click="levelDown(event);"
+					fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09" height="100%"/>
+				<mx:Button id="levelBtn" 
+					label="HARD"				
+					width="100%" height="100%" fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09"/>
+				<mx:Button id="harderBtn" 
+					label="&gt;&gt;" 
+					click="levelUp(event);"					
+					fillAlphas="[1.0, 1.0]" fillColors="[#0C5B09, #0C5B09]" borderColor="#0C5B09" height="100%"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:Canvas>
+	
+</mx:VBox>
+	
+	
+</mx:Canvas>

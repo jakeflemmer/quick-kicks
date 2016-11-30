@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="absolute"
+	creationComplete="startScript();"
+	backgroundGradientAlphas="[1.0, 1.0]"
+	backgroundGradientColors="[#16BE0E, #11790B]"
+	xmlns:views="classes.views.*"
+	frameRate="25"
+	 themeColor="#0A750F" xmlns:touchPad="classes.touchPad.*">
+
+	<!--
+	deactivate="GameSettingsData.getInstance().paused = true;"
+	-->
+<mx:Script>
+	<![CDATA[
+		import classes.controllers.DemoTeamController;
+		import classes.events.GameEvents;
+		import classes.data.GameSettingsData;
+
+	/* NOTES
+
+	new TODO:
+
+		TOP 3 Priority :
+		===================
+
+	1.  Make needToComeToBall() function
+
+	2.	Make firstTouchDirection() function
+
+	3.  Add third AI option -- look for pass     *     2 hours
+
+		ALSO: passReceiver only comeToBall() if his distance to the ball is <= interceptors distance to ball + 5;
+
+		tasks:
+
+		create control panel dashboard with bindings to all game settings data
+
+		make a calculator class that reads all properties from field data singleton
+
+		make field controller have teamData objects and not teamController objects
+
+		make abstract player controller have burden of player functions
+
+		make abstract team controller have burden of functions
+
+		make cpu player light up when going for ball
+
+		ai to decide player actions
+		a. shoot
+		b. dribble
+		c. pass
+		d. protect ball
+
+		nice to have:
+
+		make goal have a glow filter that pulsates and glows the closer the ball gets!
+
+		write calculator class to perform all calculations with pythagorean theorems
+		-------------------------------------------------------------------------------
+		calcPlayerWithMostSpace():PlayerData;
+
+		nearestPlayer(plyr:playerData):PlayerData;
+
+		spacePlayerHas(plyr:playerData):Number;
+
+		passReceiverOpen(passer:PlayerData,receiver:PlayerData):Boolean;
+
+		bestPass(plyr:PlayerData):PlayerData
+
+		closestPass(plyr:PlayerData):PlayerData
+
+		playersDistanceFromGoal(plyr:PlayerData):Number
+
+		calculateAllOpenPasses(plyr:PlayerData):ArrayCollection
+
+		var tacticalScore:Number;
+
+		tacticalScore =
+			( maxDistanceFromGoal - totalDistanceToGoal(plyr) )
+				+ spacePlayerHas(plyr);
+
+		private function calulateTeamMatesTacticalScore(plyr:PlayerData)
+
+			*/
+		import mx.controls.Button;
+		import classes.controllers.KeyboardControls;
+		import classes.controllers.GameController;
+		import classes.data.SoccerBallData;
+		import classes.views.SoccerBallView;
+		import classes.data.FieldData;
+		import classes.data.PlayerData;
+		import classes.data.*;
+		[Bindable]
+		private var gameControllerWidth:Number;
+
+		public var gameController:GameController;
+		private var gameData:GameSettingsData;
+
+		public var focusBtn:Button;
+		private var imgMask:Shape;
+
+		public function startScript():void
+		{
+
+			FieldData.getInstance().fieldHeight = 1000;
+			FieldData.getInstance().fieldWidth = 1500;
+
+			this.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
+			this.addEventListener(KeyboardEvent.KEY_UP,onKeyUp);
+
+
+			gameController = new GameController;
+			stageCvs.rawChildren.addChild(gameController);
+
+			gameData = GameSettingsData.getInstance();
+			gameData.addEventListener(GameEvents.GAME_PAUSED,onGamePaused);
+			gameData.addEventListener(GameEvents.GAME_UNPAUSED,onGameUnPaused);
+			setStageSize();
+		}
+		public function setStageSize(e:Event = null):void
+		{
+			var gameWHRatio:Number = 1500/1040;
+			var stageW:Number = backStageCvs.width;
+			var stageH:Number = backStageCvs.height;
+			var stageWHRatio:Number = stageW/stageH;
+
+			if ( stageWHRatio > gameWHRatio){
+				stageCvs.height = backStageCvs.height;
+				stageCvs.width = stageCvs.height * gameWHRatio;
+			}
+			if ( stageWHRatio < gameWHRatio){
+				stageCvs.width = backStageCvs.width*.7;
+				stageCvs.height = stageCvs.width / gameWHRatio;
+			}
+			if ( gameController != null )
+			{
+				gameController.scaleX = stageCvs.width/1500;
+				gameController.scaleY = stageCvs.height/1000;
+			}
+			stageCvs.y = (backStageCvs.height*.5) - (stageCvs.height*.5);
+			// offset the x to adjust for width of buttons
+			//stageCvs.x = (backStageCvs.width*.5) - (stageCvs.width*.5);
+			stageCvs.x = (backStageCvs.width*.3);
+			//if ( stageCvs.y < 40 ) stageCvs.y = 40;
+
+
+		}
+		public function onGamePaused(e:GameEvents):void
+		{
+
+		}
+		private function onGameUnPaused(e:GameEvents):void
+		{
+			hideAllMenus();
+		}
+		private function hideAllMenus():void
+		{
+			playMenuCvs.visible = false;
+			controlsMenuCvs.visible = false;
+			settingsMenuCvs.visible = false;
+			aboutMenuCvs.visible = false;
+			//speedSlider.focusEnabled = false;
+			//levelSlider.focusEnabled = false;
+			//speedSlider.enabled = false;
+			//levelSlider.enabled = false;
+			//settingsMenuCvs.focusEnabled = false;
+			focusManager.setFocus(advancedBtn);
+
+			trace("focusEnabled = false");
+		}
+
+
+		public function onKeyDown(key:KeyboardEvent):void
+		{
+			KeyboardControls.getInstance().onKeyDown(key);
+		}
+		public function onKeyUp(key:KeyboardEvent):void
+		{
+			KeyboardControls.getInstance().onKeyUp(key);
+		}
+		private function onFocusBtnClick(e:MouseEvent):void
+		{
+			gameController.reset();
+		}
+
+
+	]]>
+</mx:Script>
+
+<mx:Canvas id="backStageCvs"
+	width="100%" height="100%"
+	resize="setStageSize(event);"
+	creationComplete="setStageSize(event);"
+	fontSize="{backStageCvs.height * .03}"
+	color="#FFFFFF">
+
+<mx:ApplicationControlBar id="menuAppCBar"
+	 width="100%" height="20"
+	 dock="true"
+	 fontSize="7"
+	 fillAlphas="[1.0, 1.0]"
+	 fillColors="[#11790B, #11790B]"
+	  color="#FFFFFF" horizontalGap="0"
+	  click="GameSettingsData.getInstance().paused = true;">
+	<mx:Button id="playBtn"
+		label="PLAY"
+		height="90%"
+		width="17.5%"
+		textRollOverColor="#F8EA88"
+		fillAlphas="[1.0, 1.0]" fillColors="[#11790B, #11790B]"
+		click="hideAllMenus();
+				playMenuCvs.visible = true;"
+		 borderColor="#11790B"/>
+	<mx:Button id="settingsBtn"
+		label="SETTINGS"
+		height="100%"
+		width="17.5%"
+		textRollOverColor="#F8EA88"
+		fillAlphas="[1.0, 1.0]" fillColors="[#11790B, #11790B]"
+		click="hideAllMenus();
+				settingsMenuCvs.visible = true;
+				speedSlider.enabled = true;
+				levelSlider.enabled = true;"
+
+		 borderColor="#11790B"/>
+	<mx:Button id="redScoreBtn"
+		label="{GameSettingsData.getInstance().redScore}"
+		height="100%"
+		width="10%"
+		 fillAlphas="[1.0, 1.0]" fillColors="[#A40A0A, #630909]"/>
+	<mx:Button id="timerBtn"
+		label=""
+		height="100%"
+		width="10%"
+		fillAlphas="[1.0, 1.0]" fillColors="[#11790B, #11790B]" borderColor="#11790B"/>
+	<mx:Button id="blueScoreBtn"
+		label="{GameSettingsData.getInstance().blueScore}"
+		height="100%"
+		width="10%"
+		textRollOverColor="#F8EA88"
+		 fillAlphas="[1.0, 1.0]" fillColors="[#3131E4, #28108E]"/>
+	<mx:Button id="controlsBtn"
+		label="CONTROLS"
+		height="100%"
+		width="17.5%"
+		 fillAlphas="[1.0, 1.0]" fillColors="[#11790B, #11790B]"
+		 click="hideAllMenus();
+				controlsMenuCvs.visible = true;"
+		 textRollOverColor="#F8EA88" borderColor="#11790B"/>
+	<mx:Button id="aboutBtn"
+		label="ABOUT"
+		height="100%"
+		width="17.5%"
+		textRollOverColor="#F8EA88"
+		fillAlphas="[1.0, 1.0]" fillColors="[#11790B, #11790B]"
+		click="hideAllMenus();
+				aboutMenuCvs.visible = true;"
+		 borderColor="#11790B"/>
+
+</mx:ApplicationControlBar>
+
+
+<mx:Canvas id="stageCvs"
+	>
+
+</mx:Canvas>
+	<mx:Canvas id="playMenuCvs"
+		y="40"
+		alpha=".5"
+		width="38%" height="100%"
+		backgroundColor="#0"
+		visible="false"
+		hideEffect="WipeLeft"
+		showEffect="WipeRight"
+		>
+		<mx:VBox width="62%"
+			height="100%"
+			horizontalCenter="0" verticalCenter="0"
+			verticalGap="{backStageCvs.height *.1}">
+			<mx:Button label="PLAY" width="100%" height="33%"
+				click="GameSettingsData.getInstance().demoMode=false;
+						GameSettingsData.getInstance().newGame();"
+				fillAlphas="[1.0, 1.0]" fillColors="[#2D992D, #207F0A]"
+				textRollOverColor="#F8EA88"
+				/>
+			<mx:Button label="DEMO" width="100%" height="33%"
+				click="GameSettingsData.getInstance().demoMode=true;"
+				fillAlphas="[1.0, 1.0]" fillColors="[#2D992D, #207F0A]"
+				textRollOverColor="#F8EA88"
+				/>
+			<mx:Button label="RESET" width="100%" height="33%"
+				click="GameSettingsData.getInstance().newGame();"
+				fillAlphas="[1.0, 1.0]" fillColors="[#2D992D, #207F0A]"
+				textRollOverColor="#F8EA88"
+				/>
+		</mx:VBox>
+	</mx:Canvas>
+		<mx:Canvas id="settingsMenuCvs"
+		y="40"
+		alpha="0.5"
+		width="38%" height="100%"
+		backgroundColor="#0"
+		visible="false"
+		hideEffect="WipeLeft"
+		showEffect="WipeRight"
+
+		>
+				<mx:Canvas y="0" width="62%" height="100%" horizontalCenter="0">
+						<mx:Button id="advancedBtn"
+							x="0" label="ADVANCED"
+							width="100%" height="20%"
+							bottom="10"
+							fillAlphas="[1.0, 1.0]" fillColors="[#2D992D, #207F0A]"
+							textRollOverColor="#F8EA88"
+							/>
+						<mx:Canvas x="0" y="10" width="100%" height="20%" color="#FFFFFF" backgroundColor="#000000">
+								<mx:Label text="LEVEL :" textAlign="center" horizontalCenter="0" top="10"/>
+								<mx:HSlider id="levelSlider"
+									change="GameSettingsData.getInstance().level = levelSlider.value;"
+									creationComplete="levelSlider.value = GameSettingsData.getInstance().level;"
+									minimum="1" maximum="4"
+									snapInterval="1" enabled="true"
+									tickColor="#ffffff"
+									sliderThumbClass="classes.views.misc.BigThumbSlider"
+									fillAlphas="[1.0, 1.0]" fillColors="[#8B1616, #8B1616]"
+									tickInterval="1"
+									x="0" width="100%" height="25%" verticalCenter="0" minWidth="50"/>
+						</mx:Canvas>
+						<mx:Canvas width="100%" height="20%" color="#FFFFFF"  backgroundColor="#000000" horizontalCenter="0" verticalCenter="0">
+								<mx:Label text="SPEED :" textAlign="center" horizontalCenter="0" top="10"/>
+								<mx:HSlider id="speedSlider"
+									change="GameSettingsData.getInstance().speed = speedSlider.value;"
+									creationComplete="speedSlider.value = GameSettingsData.getInstance().speed;"
+									minimum="1" maximum="10"
+									snapInterval="1" enabled="true"
+									sliderThumbClass="classes.views.misc.BigThumbSlider"
+									tickColor="#ffffff"
+									fillAlphas="[1.0, 1.0]" fillColors="[#8B1616, #8B1616]"
+									tickInterval="1"
+									x="0"
+									width="100%" height="25%"
+									verticalCenter="0" minWidth="50"/>
+						</mx:Canvas>
+				</mx:Canvas>
+	</mx:Canvas>
+	<mx:Canvas id="controlsMenuCvs"
+		x="{backStageCvs.width*.62}"
+		y="40"
+		alpha=".5"
+		width="38%" height="100%"
+		backgroundColor="#000000"
+		visible="false"
+		showEffect="WipeLeft"
+		hideEffect="WipeRight"
+		>
+		<mx:TextArea borderStyle="none" backgroundAlpha="0.0" horizontalCenter="0" verticalCenter="0" height="62%" width="80%">
+			<mx:text>Use the arrow keys to move. Press &quot;z&quot; to pass / shoot.</mx:text>
+		</mx:TextArea>
+	</mx:Canvas>
+	<mx:Canvas id="aboutMenuCvs"
+		x="{backStageCvs.width*.62}"
+		y="40"
+		alpha=".5"
+		width="38%" height="100%"
+		backgroundColor="#0"
+		visible="false"
+		showEffect="WipeLeft"
+		hideEffect="WipeRight"
+		>
+		<mx:Label y="10" text="QUICK BALLS" horizontalCenter="0"/>
+		<mx:Label y="68" text="Jake Flemmer - 2010" horizontalCenter="0"/>
+		<mx:TextArea
+			verticalCenter="0"
+			wordWrap="true"
+			text="Quick balls is written in actionscript 3.0. Playing it and not having fun is illegal."
+			height="50%" width="80%"
+			horizontalCenter="0"
+			backgroundAlpha="0.0"
+			borderStyle="none"/>
+	</mx:Canvas>
+
+
+
+
+</mx:Canvas>
+
+<views:SettingsAdmin width="32%" height="100%"/>
+
+
+<touchPad:TouchPad id="touchPad" width="100%" height="100%" visible="false"/>
+
+</mx:Application>

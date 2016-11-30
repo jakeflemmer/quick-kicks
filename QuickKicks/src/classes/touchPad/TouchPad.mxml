@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   
+		   width="100%" height="100%"
+		   creationComplete="canvas1_creationCompleteHandler(event)"
+		   >
+
+	<fx:Script>
+		<![CDATA[
+			import classes.controllers.KeyboardControls;
+			import classes.skins.CircularButtonSkin;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.skins.spark.ButtonSkin;
+			
+			[Bindable]
+			public var tenPercent:Number  =0;
+			
+			[Bindable]
+			public var halfHeight:Number = 0;
+			
+			[Bindable]
+			public var halfWidth:Number = 0;
+			[Bindable]
+			public var buttonRadius:Number =0;
+			[Bindable]
+			public var rightSide:Number;
+
+
+			protected function upBtn_mouseDownHandler(event:MouseEvent):void
+			{			
+				KeyboardControls.getInstance().upKey = true;				
+			}
+
+
+			protected function downBtn_mouseDownHandler(event:MouseEvent):void
+			{				
+				KeyboardControls.getInstance().downKey = true;			
+			}
+
+			protected function rightBtn_mouseDownHandler(event:MouseEvent):void
+			{			
+				KeyboardControls.getInstance().rightKey = true;				
+			}
+
+
+			protected function leftBtn_mouseDownHandler(event:MouseEvent):void
+			{				
+				KeyboardControls.getInstance().leftKey = true;				
+			}
+			
+			
+			
+			
+
+			protected function upBtn_mouseUpHandler(event:MouseEvent):void
+			{				
+				KeyboardControls.getInstance().upKey = false;			
+			}
+
+			protected function downBtn_mouseUpHandler(event:MouseEvent):void
+			{
+				KeyboardControls.getInstance().downKey = false;			
+			}
+
+			protected function rightBtn_mouseUpHandler(event:MouseEvent):void
+			{				
+				KeyboardControls.getInstance().rightKey = false;
+			}
+
+
+			protected function leftBtn_mouseUpHandler(event:MouseEvent):void
+			{			
+				KeyboardControls.getInstance().leftKey = false;
+			}
+
+
+			protected function passShoot_mouseDownHandler(event:MouseEvent):void
+			{
+				//KeyboardControls.getInstance().buildingKickPower = true;
+			}
+
+
+			protected function passShoot_mouseUpHandler(event:MouseEvent):void
+			{
+				KeyboardControls.getInstance().passBall = true;
+				//KeyboardControls.getInstance().buildingKickPower = false;
+			}
+
+
+			protected function canvas1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var startWidth:Number = buttonsCvs.width;
+				var startHeight:Number = buttonsCvs.height;
+				buttonRadius = this.width * .14;
+				tenPercent = this.width * .1;
+				halfHeight = (startHeight/2) - (buttonRadius/2);
+				halfWidth = (startWidth/2) - (buttonRadius/2);
+				rightSide = buttonsCvs.width - (buttonRadius);
+				
+			}
+
+		]]>
+	</fx:Script>
+
+	
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:Canvas id="buttonsCvs" width="30%" height="100%" borderColor="red" borderStyle="solid"
+			   horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		
+			<s:Button id="upBtn"
+					  
+					  label="up"
+					  x="{halfWidth}"
+					  y="0"
+					  height="{buttonRadius}"
+					  width="{buttonRadius}"
+					  color="blue"
+					  mouseDown="upBtn_mouseDownHandler(event)"
+					  mouseUp="upBtn_mouseUpHandler(event)"
+					  skinClass="classes.skins.CircularButtonSkin"
+					  
+					  />
+			<s:Button id="downBtn"
+					  label="down"
+					  x="{halfWidth}"
+					  y="{buttonsCvs.height - buttonRadius - tenPercent*2}"
+					  height="{buttonRadius}"
+					  width="{buttonRadius}"
+					  color="red"
+					  mouseDown="downBtn_mouseDownHandler(event)"
+					  mouseUp="downBtn_mouseUpHandler(event)"
+					  skinClass="classes.skins.CircularButtonSkin"
+					  />
+		
+			
+			<s:Button id="leftBtn"
+				  label="left"
+				  height="{buttonRadius}"
+				  width="{buttonRadius}"
+				  x="0"
+				  y="{halfHeight-tenPercent}"
+				  mouseDown="leftBtn_mouseDownHandler(event)"
+				  mouseUp="leftBtn_mouseUpHandler(event)"
+				  color="black"
+				  skinClass="classes.skins.CircularButtonSkin"
+				  />
+		<s:Button id="rightBtn"
+				  label="rightBtn"
+				  x="{rightSide}"
+				  y="{halfHeight-tenPercent}"
+				  color="green"
+				  mouseDown="rightBtn_mouseDownHandler(event)"
+				  mouseUp="rightBtn_mouseUpHandler(event)"
+				  height="{buttonRadius}"
+				  width="{buttonRadius}"
+				  skinClass="classes.skins.CircularButtonSkin"
+				  />
+		
+	
+	<s:Button 
+		id="passShoot"
+		width="{buttonRadius}"
+		height="{buttonRadius}"
+		x="{halfWidth}"
+		y="{buttonsCvs.height - buttonRadius-5}"
+	
+		label="pass shoot"
+		mouseDown="passShoot_mouseDownHandler(event)"
+		mouseUp="passShoot_mouseUpHandler(event)"
+		skinClass="classes.skins.CircularButtonSkin"
+		/>
+		</mx:Canvas>
+</mx:Canvas>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	<fx:Script>
+		<![CDATA[
+			import classes.data.GameSettingsData;
+			
+			public function printLog():void{
+				
+				trace("SETTINGS");
+				for ( var i:uint = 0; i < settingsVBox.numChildren; i++)
+				{
+					var obj : *  = settingsVBox.getChildAt(i);
+					
+					var setting : HSlider = obj as HSlider;
+					if ( ! setting ) continue;
+					
+					trace( setting.id + " : " + setting.value );
+					
+				}
+				trace("END SETTINGS");
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+		<mx:VBox width="100%" id="settingsVBox">
+			<s:Spacer height="100" />
+			<mx:HSlider	id="frameRate"	
+						labels="['frame rate']"
+						change="stage.frameRate = frameRate.value;" 
+						creationComplete="frameRate.value = 24;"
+						minimum="1" maximum="24"  
+						snapInterval="1"
+						/>
+			<mx:HSlider	id="fieldFriction"	
+					labels="['field friction']"
+						change="GameSettingsData.getInstance().fieldFriction = fieldFriction.value;" 
+						creationComplete="fieldFriction.value = GameSettingsData.getInstance().fieldFriction;"
+						minimum="0" maximum="3"  
+						snapInterval=".1"
+						/>
+			<mx:HSlider	id="soccerBallFriction"	
+						labels="['ball friction']"
+						change="GameSettingsData.getInstance().soccerBallFriction = soccerBallFriction.value;" 
+						creationComplete="soccerBallFriction.value = GameSettingsData.getInstance().soccerBallFriction;"
+						minimum="0" maximum="6"  
+						snapInterval=".5"
+						/>
+			
+			<mx:HSlider	id="dribbleEaasing"	
+						labels="['drible easing']"
+						change="GameSettingsData.getInstance().dribbleEaasing =dribbleEaasing.value;" 
+						creationComplete="dribbleEaasing.value = GameSettingsData.getInstance().dribbleEaasing;"
+						minimum="0" maximum="1"  
+						snapInterval=".05"
+						/>
+			
+			<mx:HSlider	id="dribleSpeed"	
+						labels="['drible speed']"
+						change="GameSettingsData.getInstance().blueMaxDribbleSpeed =dribleSpeed.value;
+						GameSettingsData.getInstance().redMaxDribbleSpeed =dribleSpeed.value;" 
+						creationComplete="dribleSpeed.value = GameSettingsData.getInstance().redMaxDribbleSpeed;"
+						minimum="0" maximum="2"  
+						snapInterval=".1"
+						/>
+			
+			<mx:HSlider	id="acceleration"	
+						labels="['acceleration']"
+						change="GameSettingsData.getInstance().redTeamAcceleration =acceleration.value;
+						GameSettingsData.getInstance().blueTeamAcceleration =acceleration.value;" 
+						creationComplete="acceleration.value = GameSettingsData.getInstance().redTeamAcceleration;"
+						minimum="0" maximum="2"  
+						snapInterval=".1"
+						/>
+			
+			<mx:HSlider	id="maxSpeed"	
+						labels="['maxSpeed']"
+						change="GameSettingsData.getInstance().redTeamMaxSpeed =maxSpeed.value;
+						GameSettingsData.getInstance().blueTeamMaxSpeed =maxSpeed.value;" 
+						creationComplete="maxSpeed.value = GameSettingsData.getInstance().redTeamMaxSpeed;"
+						minimum="1" maximum="20"  
+						snapInterval="1"
+						/>
+			
+			<mx:HSlider	id="kickPower"	
+						labels="['kick power']"
+						change="GameSettingsData.getInstance().redTeamKickPower = kickPower.value;
+						GameSettingsData.getInstance().blueTeamKickPower = kickPower.value;" 
+						creationComplete="kickPower.value = GameSettingsData.getInstance().blueTeamKickPower;"
+						minimum="10" maximum="100"  
+						snapInterval="5"
+						/>
+			
+			<mx:HSlider	id="passPauseFrames"	
+						labels="['pass pause']"
+						change="GameSettingsData.getInstance().passPauseFrames = passPauseFrames.value;" 
+						creationComplete="passPauseFrames.value = GameSettingsData.getInstance().passPauseFrames;"
+						minimum="1" maximum="50"  
+						snapInterval="1"
+						/>
+			
+			<mx:HSlider	id="passLinePauseFrames"	
+						labels="['pass line pause']"
+						change="GameSettingsData.getInstance().passLinePauseFrames = passLinePauseFrames.value;" 
+						creationComplete="passLinePauseFrames.value = GameSettingsData.getInstance().passLinePauseFrames;"
+						minimum="1" maximum="50"  
+						snapInterval="1"
+						/>
+			
+			
+			
+			<mx:Button label="Get Focus" click="printLog();"/>
+			
+		</mx:VBox>
+		
+	
+</s:Group>
